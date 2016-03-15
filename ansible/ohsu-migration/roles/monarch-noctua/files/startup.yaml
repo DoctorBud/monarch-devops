@@ -41,15 +41,21 @@ MINERVA_LOCATION:
 USER_DATA:
   comment: The location of the known users for the system (GO metadata users.yaml style).
   type: directory
-  value: /opt/noctua/users.yaml
+  value: /opt/monarch-phenote/webphenote-config/users.yaml
 NOCTUA_MODELS:
   comment: The directory of the noctua models to use and monitor.
   type: directory
-  value: /opt/noctua-models/models/
-GENEONTOLOGY_CATALOG:
+  value: /opt/monarch-models/models/
+ONTOLOGY_CATALOG:
   comment: The catalog to use for Minerva.
   type: file
-  value: /opt/geneontology.org/trunk/ontology/extensions/catalog-v001.xml
+  value: /opt/monarch-phenote/webphenote-config/cached-models/catalog.xml
+#  value: /opt/geneontology.org/trunk/ontology/extensions/catalog-v001.xml
+ONTOLOGY_LIST:
+  comment: The ontologies to use for Minerva.
+  type: list
+  value:
+    - http://purl.obolibrary.org/obo/upheno/monarch.owl
 WORKBENCHES:
   comment: The location of workbench directories to add to the configuration.
   type: list
