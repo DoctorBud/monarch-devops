@@ -40,6 +40,9 @@
   command: update-alternatives --config g++
   become: true
 
+- name: Install mvn
+  apt: name=maven state=latest update_cache=yes
+  become: true
 
 ###
 ### Node.js; 4.x
@@ -63,7 +66,7 @@
 - name: git clone noctua experimental
   git: repo=https://github.com/DoctorBud/noctua.git
        dest=/opt/noctua
-       version=typo-fixes
+       version=modernize-ng
        update=yes
   become: true
 # - name: git clone noctua master
@@ -77,7 +80,7 @@
   become: true
 
 - name: git clone monarch-phenote master
-  git: repo=https://github.com/monarch-initiative/monarch-phenote.git
+  git: repo=https://github.com/DoctorBud/monarch-phenote.git
        dest=/opt/monarch-phenote
        version=master
        update=yes
@@ -106,6 +109,16 @@
   command: chown -R {{ target_user }}:{{ target_user }} /opt/owltools
   become: true
 
+- name: git clone bbop-client-barista socketio-upgrade
+  git: repo=https://github.com/DoctorBud/bbop-client-barista.git
+       dest=/opt/bbop-client-barista
+       version=socketio-upgrade
+       update=yes
+  become: true
+- name: chown
+  command: chown -R {{ target_user }}:{{ target_user }} /opt/bbop-client-barista
+  become: true
+
 - name: geneontology.org (limited) svn checkout
   subversion: repo=svn://ext.geneontology.org/trunk/ontology dest=/opt/geneontology.org/trunk/ontology
   become: true
@@ -114,23 +127,30 @@
 ###
 ### WebPhenote (monarch-phenote) config and setup.
 ###
-- name: npm install for owltools
-  command: npm install
-  args:
-    chdir: /opt/owltools/
 - name: build owltools
   command: ./build.sh
   args:
     chdir: /opt/owltools/
 - name: build mirror and catalog.xml for webphenote
-  command: ./mirrorOntologyLocally.sh
+  command: bash ./mirrorOntologyLocally.sh
   args:
     chdir: /opt/monarch-phenote/webphenote-config/
 - name: Verify mirror and catalog.xml for webphenote
-  command: ./checkMirror.sh
+  command: bash ./checkMirror.sh
   args:
     chdir: /opt/monarch-phenote/webphenote-config/
 
+
+###Build bbop-client-barista with socket.io 1.4.5
+- name: npm install for bbop-client-barista
+  command: npm install
+  args:
+    chdir: /opt/bbop-client-barista/
+- name: link bbop-client-barista
+  shell: npm link /opt/bbop-client-barista/
+  args:
+    chdir: /opt/noctua/
+  become: true
 
 ###
 ### Noctua config and setup.
